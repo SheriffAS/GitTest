@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <title>Dynamic Table</title>
+    <style >
+    h1 { text-align: center; color: solid black;}
+    body {background-color: lightblue}
+    #form, #result { width: 750px; margin: auto;}
+    td { padding: 0px 10px 0px 10px;}
+    button { width: 110px; height: 50px;}
+    input[type='text'], input[type='number'] { width: 130px;}
+    #result table { border: 1px solid black; width: 720px;}
+    .button { margin-top: 20px; margin-right: 80px;}
+    </style>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+      <body>
+        <h1>Dynamicky renderovany obsah tabulky</h1>
+        <div id="form">
+          <table><tr>
+            <td><label>Firstname:</label></td><br>
+            <td><label>Lastname:</label></td>
+            <td><label>Age:</label></td>
+            <td><label>Gender:</label></td>
+            <td rowspan="2"><button  onclick="btnAdd()">ADD</button></td>
+            </tr>
+            <tr>
+            <td><input type="text" id="fname"></td>
+            <td><input type="text" id="lname" ></td>
+            <td><input type="number"id="age" ></td>
+            <td>
+            <input type="Radio" id ="male"name="gender" value="male">Male<br>
+            <input type="Radio" id ="female" name="gender" value="female">Female</td>
+            </tr>
+              </table>
+        </div>
+
+
+    <div id="result">
+        <table class="tableResult" id="tableResult">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th onclick="sortLetter()">First Name</th>
+            <th onclick="sortLetter2()">Last Name</th>
+            <th onclick="sortAge()">Age</th>
+            <th>Gender</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody id="autoContent">
+          </tbody>
+        </table>
+        <button class="button" id="btnSave">Save Data</button>
+        <button class="button" id="btnLoad">Load Data</button>
+    </div>
+      </body>
+
+    <script type="text/javascript">
+        let count=0;
+        let persons=[];
+
+
+    function btnAdd(){
+      count++;
+        let fname=$('#fname').val();
+        let lname=$('#lname').val();
+        let vek=$('#age').val();
+        let gender=$('input[name=gender]:checked').val();
+        // if (gender==='undefined') gender='U';
+
+        let person= {
+          id:count,
+          fname:fname,
+          lname:lname,
+          age:vek,
+          gender:gender
+        };
+        persons.push(person);
+
+        renderTable(person);
+
+}
+
+        const renderTable=(person)=>{
+
+
+        let column0=$('<td>').text(person.id);
+        let column1=$('<td>').text(person.fname);
+        let column2=$('<td>').text(person.lname);
+        let column3=$('<td>').text(person.age);
+        let column4=$('<td>');
+        if(person.gender=='male')
+          column4.text('Male');
+          else if(person.gender=='female')
+            column4.text('Female');
+          else
+            column4.text('Unknown');
+        let column5=$('<td>');
+        let text='deletePerson('+person.id+')';
+      //	let image=$('<img>').attr('src','delete.png',).attr('onclick', ;).attr('alt','trash-systems');
+        let image=$('<img>').attr({
+          src:'bin.jpg',
+          onclick:`${text}`,
+        });
+        column5.append(image);
+
+        let row=$('<tr>');
+        row.append(column0);
+        row.append(column1);
+        row.append(column2);
+        row.append(column3);
+        row.append(column4);
+        row.append(column5);
+        $('#tableResult').append(row);
+        $('#fname').val('');
+        $('#lname').val('');
+        $('#age').val('');
+
+        // console.log('name: '+gender);
+        //console.log('name: '+fname)
+      }
+
+      $('#btnSave').click( ()=>{
+              if(typeof(Storage) !== "Undefined"){
+        			let text=JSON.stringify(persons);
+        			localStorage.setItem("persons",text);
+          }
+      });
+      $('#btnLoad').click( ()=>{
+        if(typeof(Storage) !== "Undefined"){
+        let text=localStorage.getItem("persons");
+        persons=JSON.parse(text);
+        $('#autoContent').empty();
+        persons.map(x =>{
+          renderTable(x);
+        })
+      }
+
+        });
+
+        const deletePerson=(id)=>{
+          console.log(id);
+          let index=persons.findIndex(x => x.id===id);
+          console.log(index);
+          persons.splice(index,1);
+          console.log(persons);
+          $('#autoContent').empty();
+          persons.map(x=>{
+            renderTable(x);
+            console.log(x);
+          });
+
+        }
+
+
+
+        function sortAge(){
+
+           persons.sort( (a,b)=> {
+             let n1=parseInt(a.age);
+             let n2=parseInt(b.age);
+             if (n1 < n2) {return -1;}
+             if (n1 > n2) {return 1;}
+             return 0;
+
+           });
+
+             $('#autoContent').empty();
+           persons.map( x => {
+             renderTable(x);
+
+           });
+         }
+
+         //triedenie firstname
+         function sortLetter(){
+
+           persons.sort( (a,b)=> {
+            if(a.fname < b.fname)
+            { return -1; }
+
+        	else
+
+        	{ return 1; }
+
+           });
+
+             $('#autoContent').empty();
+           persons.map( x => {
+
+             renderTable(x);
+
+           });
+         }
+
+         //triedenie podla lastname
+         function sortLetter2(){
+
+           persons.sort( (a,b)=> {
+            if(a.fname < b.fname)
+            { return -1; }
+
+        	else
+
+        	{ return 1; }
+
+           });
+
+             $('#autoContent').empty();
+           persons.map( x => {
+
+             renderTable(x);
+
+           });
+         }
+
+
+
+    </script>
+  </head>
+
+</html>
