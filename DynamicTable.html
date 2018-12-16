@@ -85,28 +85,34 @@
 
         const renderTable=(person)=>{
 
-
+        let row=$('<tr>');
         let column0=$('<td>').text(person.id);
         let column1=$('<td>').text(person.fname);
         let column2=$('<td>').text(person.lname);
         let column3=$('<td>').text(person.age);
         let column4=$('<td>');
-        if(person.gender=='male')
-          column4.text('Male');
-          else if(person.gender=='female')
+        if(person.gender=='male'){
+        row.attr({style:"background-color:lightgreen"});
+          column4.text('Male');}
+          else if(person.gender=='female'){
+            row.attr({style:"background-color:#ff1919"});
             column4.text('Female');
+          }
           else
             column4.text('Unknown');
         let column5=$('<td>');
         let text='deletePerson('+person.id+')';
       //	let image=$('<img>').attr('src','delete.png',).attr('onclick', ;).attr('alt','trash-systems');
-        let image=$('<img>').attr({
-          src:'bin.jpg',
-          onclick:`${text}`,
-        });
+      let image = $("<img>").attr
+      ({
+        src:"bin.jpg",
+        onclick:text,
+        onMouseOver:"$(this).attr({src:'hidebin.jpg'})",
+        onMouseOut:"$(this).attr({src:'bin.jpg'})"
+      });
         column5.append(image);
 
-        let row=$('<tr>');
+
         row.append(column0);
         row.append(column1);
         row.append(column2);
